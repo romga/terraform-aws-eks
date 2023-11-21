@@ -73,10 +73,11 @@ locals {
     spot_allocation_strategy                 = "lowest-price" # Valid options are 'lowest-price' and 'capacity-optimized'. If 'lowest-price', the Auto Scaling group launches instances using the Spot pools with the lowest price, and evenly allocates your instances across the number of Spot pools. If 'capacity-optimized', the Auto Scaling group launches instances using Spot pools that are optimally chosen based on the available Spot capacity.
     spot_instance_pools                      = 10             # "Number of Spot pools per availability zone to allocate capacity. EC2 Auto Scaling selects the cheapest Spot pools and evenly allocates Spot capacity across the number of Spot pools that you specify."
     spot_max_price                           = ""             # Maximum price per unit hour that the user is willing to pay for the Spot instances. Default is the on-demand price
-    http_endpoint               = "disabled" # Whether the metadata service is available
-    http_tokens                 = "optional" # Whether or not the metadata service requires session tokens
-    http_put_response_hop_limit = 1 # The desired HTTP PUT response hop limit for instance metadata requests
-    instance_metadata_tags = "disabled" # Enables or disables access to instance tags from the instance metadata service
+    http_endpoint                            = "disabled"     # Whether the metadata service is available
+    http_tokens                              = "optional"     # Whether or not the metadata service requires session tokens
+    http_put_response_hop_limit              = 1              # The desired HTTP PUT response hop limit for instance metadata requests
+    instance_metadata_tags                   = "disabled"     # Enables or disables access to instance tags from the instance metadata service
+    create                                   = var.worker_groups_create
   }
 
   # Merge defaults and per-group values to make code cleaner
@@ -84,7 +85,7 @@ locals {
     local.worker_groups_defaults,
     var.worker_groups_defaults,
     v,
-  ) if var.create_eks }
+  ) if var.create_eks && lookup(v, "worker_group_create", local.worker_groups_defaults["create"]) == true }
 
   worker_security_group_id = local.worker_create_security_group ? aws_security_group.worker_groups.0.id : var.worker_security_group_id
 

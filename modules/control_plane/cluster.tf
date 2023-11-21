@@ -22,7 +22,7 @@ resource "aws_eks_cluster" "this" {
     public_access_cidrs     = var.cluster_endpoint_public_access_cidrs
   }
 
-  dynamic encryption_config {
+  dynamic "encryption_config" {
     for_each = toset(var.cluster_encryption_key_arn != "" ? ["encryption_enabled"] : [])
 
     content {

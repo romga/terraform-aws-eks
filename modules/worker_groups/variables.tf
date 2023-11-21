@@ -142,3 +142,9 @@ variable "worker_security_group_id" {
   type        = string
   default     = ""
 }
+
+variable "worker_groups_create" {
+  description = "Whether to create a new worker group or not."
+  type        = bool
+  default     = true
+}
